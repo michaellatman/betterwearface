@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">BetterWearFace</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_setting">SettingActivity</string>
+    <string name="SETTING_ALWAYS_ANIMATE_TRUE">Always animate the clock even when in sleep mode.</string>
+    <string name="SETTING_ALWAYS_ANIMATE_FALSE">Only animate when device is awake</string>
+    <string name="SETTING_ALWAYS_ANIMATE">setting_always_animate</string>
+    <string name="SETTING_TEMP_FORMAT">setting_temp_format</string>
+    <string name="SETTING_TEMP_FORMAT_F">Will be displayed in Fahrenheit</string>
+    <string name="SETTING_TEMP_FORMAT_C">Will be displayed in Celsius</string>
+    <string-array name="option_temp_format">
+        <item>"Fahrenheit"</item>
+        <item>"Celsius"</item>
+    </string-array>
+    <string-array name="option_temp_format_values">
+        <item >"Fahrenheit"</item>
+        <item >"Celsius"</item>
+    </string-array>
+</resources>

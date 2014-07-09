@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference
+        android:key="@string/SETTING_ALWAYS_ANIMATE"
+        android:title="Always Animate"
+        android:summary="@string/SETTING_ALWAYS_ANIMATE_TRUE"
+        android:defaultValue="true"
+        android:enabled="false"/>
+    <ListPreference
+        android:entries="@array/option_temp_format"
+        android:entryValues="@array/option_temp_format_values"
+        android:defaultValue="Fahrenheit"
+        android:title="Temperature Units"
+        android:summary="@string/SETTING_TEMP_FORMAT_F"
+        android:key="@string/SETTING_TEMP_FORMAT">
+
+    </ListPreference>
+
+</PreferenceScreen>

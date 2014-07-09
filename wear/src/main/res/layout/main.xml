@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/background"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/hoursView" />
+
+    <com.michaellatman.betterwearface.AnimatedTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Wearable.Large"
+        android:text="Two"
+        android:id="@+id/hoursView"
+        android:textSize="25dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:textColor="@color/white"
+        android:fontFamily="sans-serif-condensed"
+        android:typeface="normal"
+        android:textStyle="bold"
+        android:gravity="right"
+        android:paddingRight="10dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="2dp" />
+
+    <com.michaellatman.betterwearface.AnimatedTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Wearable.Large"
+        android:text="Twenty"
+        android:id="@+id/tensView"
+        android:typeface="normal"
+        android:textSize="25dp"
+        android:layout_below="@+id/hoursView"
+        android:layout_marginTop="-14dp"
+        android:textColor="@color/white"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="right"
+        android:paddingRight="10dp"
+        android:layout_alignParentStart="true" />
+
+    <com.michaellatman.betterwearface.AnimatedTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Wearable.Large"
+        android:text="Two"
+        android:id="@+id/minView"
+        android:typeface="normal"
+        android:textSize="25dp"
+        android:textColor="@color/white"
+        android:fontFamily="sans-serif-condensed"
+        android:layout_below="@+id/tensView"
+        android:layout_marginTop="-14dp"
+        android:gravity="right"
+        android:paddingRight="10dp"
+        android:layout_marginLeft="0dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="July 8"
+        android:id="@+id/dateView"
+        android:textSize="15dp"
+        android:layout_alignTop="@+id/tensView"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="-3dp" />
+
+    <view
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        class="android.support.wearable.view.CircledImageView"
+        android:scaleType="fitCenter"
+        android:id="@+id/weatherIcon"
+        android:background="@drawable/snow"
+        android:layout_alignTop="@+id/minView" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:id="@+id/weatherText"
+        android:layout_below="@+id/hoursView"
+        android:layout_toRightOf="@+id/weatherIcon"
+        android:layout_alignEnd="@+id/dayView"
+        android:layout_alignBottom="@+id/minView"
+        android:paddingTop="8dp"
+        android:paddingLeft="2dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Tuesday"
+        android:id="@+id/dayView"
+        android:textSize="15dp"
+        android:layout_alignTop="@+id/hoursView"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="3dp" />
+
+
+</RelativeLayout>

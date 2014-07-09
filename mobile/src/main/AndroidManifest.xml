@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.michaellatman.betterwearface" >
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="com.google.android.permission.PROVIDE_BACKGROUND" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/icon"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".UpdateWeatherService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.michaellatman.weatherupdate" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".SettingsSyncService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.michaellatman.settings_update" />
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name=".BootReciever"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="com.michaellatman.boot" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_setting" >
+
+        </activity>
+
+    </application>
+
+</manifest>
