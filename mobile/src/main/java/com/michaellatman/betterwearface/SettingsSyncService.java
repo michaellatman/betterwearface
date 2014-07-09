@@ -27,6 +27,8 @@ import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Random;
+
 public class SettingsSyncService extends Service {
     private Context context = this;
     private SettingsSyncService me = this;
@@ -63,8 +65,8 @@ public class SettingsSyncService extends Service {
 
                 //Put settings here.
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-                Toast.makeText(getApplicationContext(),preferences.getString(SettingsFragment.KEY_PREF_TEMP_FORMAT,""),Toast.LENGTH_LONG).show();
-
+                Toast.makeText(getApplicationContext(),"Syncing Settings",Toast.LENGTH_LONG).show();
+                dataMap.getDataMap().putInt("someRandom",new Random().nextInt(30));
                 PutDataRequest request = dataMap.asPutDataRequest();
                 com.google.android.gms.common.api.PendingResult<DataApi.DataItemResult> pendingResult = Wearable.DataApi
                         .putDataItem(mGoogleApiClient, request);

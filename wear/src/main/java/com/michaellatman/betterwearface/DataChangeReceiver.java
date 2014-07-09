@@ -39,7 +39,7 @@ public class DataChangeReceiver extends WearableListenerService {
 
         ConnectionResult connectionResult =
                 googleApiClient.blockingConnect(30, TimeUnit.SECONDS);
-        Log.e("Data", "!!");
+
         if (!connectionResult.isSuccess()) {
             Log.e("Data", "Failed to connect to GoogleApiClient.");
             return;
@@ -67,7 +67,7 @@ public class DataChangeReceiver extends WearableListenerService {
             String nodeId = uri.getHost();
             String path = uri.getPath();
             String idStr = path.substring(path.lastIndexOf('/') + 1);
-
+            Log.d("New Data", "To: "+idStr);
 
             DataMapItem item = DataMapItem.fromDataItem(event.getDataItem());
             Intent intent = new Intent("com.michaellatman.betterwearface.DATA_CHANGE");
