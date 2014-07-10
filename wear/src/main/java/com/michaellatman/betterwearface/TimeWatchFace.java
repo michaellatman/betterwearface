@@ -162,7 +162,7 @@ public class TimeWatchFace extends WatchfaceActivity {
     @Override
     protected void doRestore(){
         fetch("/weather");
-        fetchAsset("/settings","background");
+        fetchAsset("/settings", "background");
     }
 
     @Override
@@ -201,7 +201,12 @@ public class TimeWatchFace extends WatchfaceActivity {
             if (condition == 113) {
                 weather.setImageDrawable(getResources().getDrawable(R.drawable.sunny));
             } else if (condition == 116) {
-                weather.setImageDrawable(getResources().getDrawable(R.drawable.mostlycloudy));
+                if(getTime().get(Calendar.AM_PM) == Calendar.AM){
+                    weather.setImageDrawable(getResources().getDrawable(R.drawable.mostlycloudy));
+                }
+                else{
+                    weather.setImageDrawable(getResources().getDrawable(R.drawable.cloud));
+                }
             } else if (condition == 119) {
                 weather.setImageDrawable(getResources().getDrawable(R.drawable.cloud));
             } else if (condition == 122) {
