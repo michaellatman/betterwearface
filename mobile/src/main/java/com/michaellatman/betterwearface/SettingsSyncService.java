@@ -4,9 +4,12 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -16,6 +19,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
@@ -27,6 +31,10 @@ import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Random;
 
 public class SettingsSyncService extends Service {
@@ -67,6 +75,45 @@ public class SettingsSyncService extends Service {
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
                 Toast.makeText(getApplicationContext(),"Syncing Settings",Toast.LENGTH_LONG).show();
                 dataMap.getDataMap().putInt("someRandom",new Random().nextInt(30));
+
+
+
+                if(preferences.getBoolean("backgroundChanged",false)) {
+                    Toast.makeText(getApplicationContext(),"Syncing Background",Toast.LENGTH_LONG).show();
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putBoolean("backgroundChanged", false);
+                    editor.commit();
+                    InputStream stream = null;
+                    Bitmap bitmap = null;
+                    try {
+                        if (!preferences.getString("backgroundURI", "").equals("")) {
+
+                            stream = getContentResolver().openInputStream(
+                                    Uri.parse(preferences.getString("backgroundURI", "")));
+                            bitmap = BitmapFactory.decodeStream(stream);
+
+                            stream.close();
+
+                        } else {
+
+                        }
+
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    if (bitmap != null) {
+                        ByteArrayOutputStream s = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, s);
+                        byte[] byteArray = s.toByteArray();
+                        dataMap.getDataMap().putBoolean("customBackground", true);
+                        dataMap.getDataMap().putAsset("background", Asset.createFromBytes(byteArray));
+                    } else {
+                        dataMap.getDataMap().putBoolean("customBackground", false);
+                    }
+                }
+
                 PutDataRequest request = dataMap.asPutDataRequest();
                 com.google.android.gms.common.api.PendingResult<DataApi.DataItemResult> pendingResult = Wearable.DataApi
                         .putDataItem(mGoogleApiClient, request);

@@ -8,8 +8,8 @@ android {
         applicationId "com.michaellatman.betterwearface"
         minSdkVersion 19
         targetSdkVersion 20
-        versionCode 9
-        versionName "1.0.3"
+        versionCode 11
+        versionName "1.1.0"
     }
     buildTypes {
         release {
@@ -26,4 +26,5 @@ dependencies {
     compile 'com.google.android.gms:play-services:5.0.+@aar'
     // You must install or update the Support Repository through the SDK manager to use this dependency.
     compile 'com.android.support:support-v4:20.0.+'
+    compile 'com.soundcloud.android:android-crop:0.9.9@aar'
 }

@@ -1,6 +1,8 @@
 package com.michaellatman.betterwearface;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -122,14 +124,16 @@ public class ExampleWatchface extends Activity implements DataListener {
     private TimeBroadcastReceiver mTimeBroadcastReceiver = new TimeBroadcastReceiver(mClockListener);
     private DataBroadcastReceiver mDataBroadcastReceiver = new DataBroadcastReceiver(this);
     private void updateTime(Calendar calendar){
-        date.setText(getMonth(calendar.get(Calendar.MONTH))+" "+calendar.get(Calendar.DAY_OF_MONTH));
+
         DateFormatSymbols symbols = new DateFormatSymbols(Locale.getDefault());
 // for the current Locale :
 //   DateFormatSymbols symbols = new DateFormatSymbols();
-        String[] dayNames = symbols.getWeekdays();
+        String[] dayNames = symbols.getShortWeekdays();
+        String[] monthsNames = symbols.getShortMonths();
         //calendar.set(Calendar.HOUR,0);
         //calendar.set(Calendar.MINUTE,0);
-        dayView.setText(dayNames[calendar.get(Calendar.DAY_OF_WEEK)]);
+        dayView.setText(dayNames[calendar.get(Calendar.DAY_OF_WEEK)]+" "+monthsNames[calendar.get(Calendar.MONTH)]+" "+calendar.get(Calendar.DAY_OF_MONTH));
+        //dayView.setText(dayNames[calendar.get(Calendar.DAY_OF_WEEK)]);
         if(calendar.get(Calendar.MINUTE)>20){
 
                 tens.setPendingText(numberToText((Integer.valueOf(Integer.toString(calendar.get(Calendar.MINUTE)).substring(0, 1) + "0"))));
@@ -174,7 +178,7 @@ public class ExampleWatchface extends Activity implements DataListener {
         weather = (CircledImageView) findViewById(R.id.weatherIcon);
         weatherText = (TextView) findViewById(R.id.weatherText);
         dayView = (TextView) findViewById(R.id.dayView);
-        date = (TextView) findViewById(R.id.dateView);
+        //date = (TextView) findViewById(R.id.dateView);
         weather.setCircleRadius(40);
         weather.setCircleColor(Color.BLACK);
         weather.setCircleBorderColor(Color.WHITE);
@@ -220,6 +224,22 @@ public class ExampleWatchface extends Activity implements DataListener {
                                 public void onResult(DataApi.DataItemResult dataItemResult) {
                                     if(dataItemResult.getDataItem() != null) {
                                         updateWeather(DataMapItem.fromDataItem(dataItemResult.getDataItem()).getDataMap());
+                                    }
+                                }
+                            });
+                            Uri image = new Uri.Builder().scheme(PutDataRequest.WEAR_URI_SCHEME).authority(nodes.get(0).getId()).path("/settings").build();
+                            PendingResult<DataApi.DataItemResult> anotherResult = Wearable.DataApi.getDataItem(mGoogleAppiClient, image);
+                            anotherResult.setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
+                                @Override
+                                public void onResult(DataApi.DataItemResult dataItemResult) {
+                                    if(dataItemResult.getDataItem() != null) {
+                                        if(DataMapItem.fromDataItem(dataItemResult.getDataItem()).getDataMap().getBoolean("customBackground",false)){
+                                            updateImage(DataMapItem.fromDataItem(dataItemResult.getDataItem()).getDataMap());
+                                            background.setVisibility(View.VISIBLE);
+                                        }
+                                        else{
+                                            background.setVisibility(View.INVISIBLE);
+                                        }
                                     }
                                 }
                             });
@@ -325,13 +345,47 @@ public class ExampleWatchface extends Activity implements DataListener {
         mTimeBroadcastReceiver.unregister(this);
         mDataBroadcastReceiver.unregister(this);
     }
+    public void updateImage(final DataMap changed){
+        GoogleApiClient g;
+        GoogleApiClient.Builder builder = new GoogleApiClient.Builder(this);
+
+        builder.addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+            @Override
+            public void onConnected(Bundle connectionHint) {
+                Log.d("GAPI", "onConnected: " + connectionHint);
+
+                PendingResult<DataApi.GetFdForAssetResult> d = Wearable.DataApi.getFdForAsset(mGoogleAppiClient, changed.getAsset("background"));
+                d.setResultCallback(new ResultCallback<DataApi.GetFdForAssetResult>() {
+                    @Override
+                    public void onResult(DataApi.GetFdForAssetResult getFdForAssetResult) {
+                        background.setImageBitmap(BitmapFactory.decodeStream(getFdForAssetResult.getInputStream()));
+
+                    }
+                });
+
+
+            }
+
+            @Override
+            public void onConnectionSuspended(int cause) {
+                Log.d("GAPI", "onConnectionSuspended: " + cause);
+
+            }
+        });
+        builder.addApi(Wearable.API);
+        g= builder.build();
+        g.connect();
+    }
 
     @Override
-    public void onDataChange(String node, DataMap changed) {
+    public void onDataChange(String node, final DataMap changed) {
         Log.d("Data Change",node);
         if(node.equals("weather")){
             wakeLock.acquire(1000);
             updateWeather(changed);
+        }
+        if(node.equals("settings")){
+            updateImage(changed);
         }
     }
 }
