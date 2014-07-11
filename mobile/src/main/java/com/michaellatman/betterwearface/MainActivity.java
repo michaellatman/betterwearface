@@ -1,6 +1,7 @@
 package com.michaellatman.betterwearface;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -75,6 +76,7 @@ public class MainActivity extends Activity  {
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.putExtra(Intent.EXTRA_LOCAL_ONLY,true);
                 startActivityForResult(intent, 1);
             }
         });
@@ -136,10 +138,9 @@ public class MainActivity extends Activity  {
                     Log.d("Image","Selected!");
                     /*
                     */
-
-
+                    Log.d("Image",imageReturnedIntent.getData().toString());
                     new Crop(imageReturnedIntent.getData()).output(outputUri).withMaxSize(312, 312).asSquare().start(this);
-                    //imageView.setImageBitmap(bitmap);
+
                 }
                 break;
             case Crop.REQUEST_CROP:
