@@ -32,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,6 +43,8 @@ public class SettingsSyncService extends Service {
     private SettingsSyncService me = this;
     private LocationManager mLocationManager;
     public Location location = null;
+    public Intent mIntent;
+    public Boolean loud = true;
     public SettingsSyncService() {
     }
 
@@ -58,13 +61,34 @@ public class SettingsSyncService extends Service {
         GoogleApiClient.Builder builder = new GoogleApiClient.Builder(this);
         builder.addApi(Wearable.API);
         builder.addConnectionCallbacks(mConnectedCallback);
+        mIntent = intent;
+        loud = intent.getBooleanExtra("loud",true);
         mGoogleApiClient = builder.build();
         mGoogleApiClient.connect();
+
 
         return START_STICKY;
 
     }
+    public static Bitmap loadBitmap(Context context, String picName){
+        Bitmap b = null;
+        FileInputStream fis;
+        try {
+            fis = context.openFileInput(picName);
+            b = BitmapFactory.decodeStream(fis);
+            fis.close();
 
+        }
+        catch (FileNotFoundException e) {
+            Log.d("file", "file not found");
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+            Log.d("file", "io exception");
+            e.printStackTrace();
+        }
+        return b;
+    }
     private GoogleApiClient.ConnectionCallbacks mConnectedCallback = new GoogleApiClient.ConnectionCallbacks() {
         @Override
         public void onConnected(Bundle bundle) {
@@ -78,44 +102,24 @@ public class SettingsSyncService extends Service {
 
 
 
-                if(preferences.getBoolean("backgroundSet",false)) {
-                    Toast.makeText(getApplicationContext(),"Syncing Background",Toast.LENGTH_LONG).show();
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putBoolean("backgroundChanged", false);
-                    editor.commit();
-                    InputStream stream = null;
-                    Bitmap bitmap = null;
-                    try {
-                        if (!preferences.getString("backgroundURI", "").equals("")) {
 
-                            stream = getContentResolver().openInputStream(
-                                    Uri.parse(preferences.getString("backgroundURI", "")));
-                            bitmap = BitmapFactory.decodeStream(stream);
 
-                            stream.close();
-
-                        } else {
-
-                        }
-
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    if (bitmap != null) {
-                        ByteArrayOutputStream s = new ByteArrayOutputStream();
-                        bitmap = Bitmap.createScaledBitmap(bitmap, 312, 312, true);
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, s);
-                        Log.d("Sync","Add background");
-                        byte[] byteArray = s.toByteArray();
-                        dataMap.getDataMap().putBoolean("customBackground", true);
-                        dataMap.getDataMap().putAsset("background", Asset.createFromBytes(byteArray));
-                    } else {
-                        Log.d("Sync","Remove background");
-                        dataMap.getDataMap().putBoolean("customBackground", false);
-                    }
+                if (preferences.getBoolean("backgroundSet",false)) {
+                    if(loud)Toast.makeText(getApplicationContext(),"Syncing Background",Toast.LENGTH_LONG).show();
+                    Bitmap bitmap = loadBitmap(getApplicationContext(),"background");
+                    ByteArrayOutputStream s = new ByteArrayOutputStream();
+                    bitmap = Bitmap.createScaledBitmap(bitmap, 312, 312, true);
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, s);
+                    Log.d("Sync","Add background");
+                    byte[] byteArray = s.toByteArray();
+                    dataMap.getDataMap().putBoolean("customBackground", true);
+                    dataMap.getDataMap().putAsset("background", Asset.createFromBytes(byteArray));
+                } else {
+                    if(loud)Toast.makeText(getApplicationContext(),"Removed Background",Toast.LENGTH_LONG).show();
+                    Log.d("Sync","Remove background");
+                    dataMap.getDataMap().putBoolean("customBackground", false);
                 }
+
                 if(dataMap.getDataMap().size()>0) {
                     PutDataRequest request = dataMap.asPutDataRequest();
                     com.google.android.gms.common.api.PendingResult<DataApi.DataItemResult> pendingResult = Wearable.DataApi

@@ -84,8 +84,7 @@ public class MainActivity extends Activity  {
             public void onClick(View view) {
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(view.getContext());
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("backgroundURI", "");
-                editor.putBoolean("backgroundChanged", true);
+                editor.putBoolean("backgroundSet", false);
                 editor.commit();
                 SettingsSyncService.startSync(view.getContext());
             }
@@ -157,7 +156,7 @@ public class MainActivity extends Activity  {
                             stream = getContentResolver().openInputStream(
                                     Uri.parse(outputUri.toString()));
                             bitmap = BitmapFactory.decodeStream(stream);
-
+                            saveFile(this,bitmap,"background");
                             stream.close();
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
@@ -170,6 +169,7 @@ public class MainActivity extends Activity  {
                     else{
                         editor.putBoolean("backgroundSet", false);
                     }
+                    bitmap.recycle();
                     editor.commit();
                     SettingsSyncService.startSync(this);
                 }

@@ -160,7 +160,7 @@ public class WatchfaceActivity extends Activity implements DataListener, GoogleA
     }
     @Override
     public void onDataChange(String node, final DataMap changed) {
-        wakeLock.acquire(2100);
+        wakeLock.acquire(3000);
         Log.d("Data Change",node);
     }
 

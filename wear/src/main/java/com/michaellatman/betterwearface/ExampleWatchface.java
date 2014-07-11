@@ -124,7 +124,7 @@ public class ExampleWatchface extends Activity implements DataListener {
     private TimeBroadcastReceiver mTimeBroadcastReceiver = new TimeBroadcastReceiver(mClockListener);
     private DataBroadcastReceiver mDataBroadcastReceiver = new DataBroadcastReceiver(this);
     private void updateTime(Calendar calendar){
-
+        wakeLock.acquire(2700);
         DateFormatSymbols symbols = new DateFormatSymbols(Locale.getDefault());
 // for the current Locale :
 //   DateFormatSymbols symbols = new DateFormatSymbols();
@@ -270,29 +270,7 @@ public class ExampleWatchface extends Activity implements DataListener {
         mGoogleAppiClient.connect();
     }
 
-    private void updateSettings(DataMap dataMap) {
-        if(dataMap!=null) {
-            if (dataMap.getAsset("image") != null) {
-                //Log.d("image", dataMap.getByteArray("image").toString());
-                //Bitmap b = BitmapFactory.decodeByteArray(, 0, dataMap.getAsset("image").getData().length)
-                /*
-                loadBitmapFromAsset( dataMap.getAsset("image"),new ResultCallback<DataApi.GetFdForAssetResult>(){
 
-                    @Override
-                    public void onResult(DataApi.GetFdForAssetResult getFdForAssetResult) {
-                        if (getFdForAssetResult.getInputStream() == null) {
-                            Log.w("image", "Requested an unknown Asset.");
-
-                        }
-                        // decode the stream into a bitmap
-                        //background.setImageBitmap(BitmapFactory.decodeStream(getFdForAssetResult.getInputStream()));
-                    }
-                });
-                */
-
-            }
-        }
-    }
 
 
     private void updateWeather(DataMap changed) {
@@ -381,7 +359,7 @@ public class ExampleWatchface extends Activity implements DataListener {
     public void onDataChange(String node, final DataMap changed) {
         Log.d("Data Change",node);
         if(node.equals("weather")){
-            wakeLock.acquire(1000);
+            wakeLock.acquire(1300);
             updateWeather(changed);
         }
         if(node.equals("settings")){
