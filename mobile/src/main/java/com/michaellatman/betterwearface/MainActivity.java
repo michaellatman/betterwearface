@@ -41,7 +41,9 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Random;
@@ -53,6 +55,7 @@ public class MainActivity extends Activity  {
     private GoogleApiClient mGoogleAppiClient;
     private LocationManager mLocationManager;
     private Button mPickBackground;
+    private Button mClearBackground;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
@@ -75,6 +78,54 @@ public class MainActivity extends Activity  {
                 startActivityForResult(intent, 1);
             }
         });
+        mClearBackground = (Button)findViewById(R.id.clearBackground);
+        mClearBackground.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(view.getContext());
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("backgroundURI", "");
+                editor.putBoolean("backgroundChanged", true);
+                editor.commit();
+                SettingsSyncService.startSync(view.getContext());
+            }
+        });
+    }
+    public static void saveFile(Context context, Bitmap b, String picName){
+        FileOutputStream fos;
+        try {
+            fos = context.openFileOutput(picName, Context.MODE_PRIVATE);
+            b.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.close();
+        }
+        catch (FileNotFoundException e) {
+            Log.d("file", "file not found");
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+            Log.d("file", "io exception");
+            e.printStackTrace();
+        }
+
+    }
+    public static Bitmap loadBitmap(Context context, String picName){
+        Bitmap b = null;
+        FileInputStream fis;
+        try {
+            fis = context.openFileInput(picName);
+            b = BitmapFactory.decodeStream(fis);
+            fis.close();
+
+        }
+        catch (FileNotFoundException e) {
+            Log.d("file", "file not found");
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+            Log.d("file", "io exception");
+            e.printStackTrace();
+        }
+        return b;
     }
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent imageReturnedIntent) {
@@ -97,8 +148,28 @@ public class MainActivity extends Activity  {
                     Log.d("Image", "Cropped!");
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
                     SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString("backgroundURI",outputUri.toString());
-                    editor.putBoolean("backgroundChanged",true);
+
+                    InputStream stream = null;
+                    Bitmap bitmap = null;
+                    try {
+
+
+                            stream = getContentResolver().openInputStream(
+                                    Uri.parse(outputUri.toString()));
+                            bitmap = BitmapFactory.decodeStream(stream);
+
+                            stream.close();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    if(bitmap!=null){
+                        editor.putBoolean("backgroundSet", true);
+                    }
+                    else{
+                        editor.putBoolean("backgroundSet", false);
+                    }
                     editor.commit();
                     SettingsSyncService.startSync(this);
                 }

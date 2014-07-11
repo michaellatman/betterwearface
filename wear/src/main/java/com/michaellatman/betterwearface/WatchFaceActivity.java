@@ -35,7 +35,6 @@ public class WatchfaceActivity extends Activity implements DataListener, GoogleA
     protected GoogleApiClient mGoogleApiClient;
     protected Boolean connected = false;
     protected String nodeID = "";
-
     PowerManager powerManager;
     PowerManager.WakeLock wakeLock;
 
@@ -87,6 +86,10 @@ public class WatchfaceActivity extends Activity implements DataListener, GoogleA
             doRestore();
         }
     }
+
+    protected Calendar getTime(){
+        return Calendar.getInstance();
+    }
     protected Uri buildURI(String path){
         return new Uri.Builder().scheme(PutDataRequest.WEAR_URI_SCHEME).authority(nodeID).path(path).build();
     }
@@ -115,12 +118,17 @@ public class WatchfaceActivity extends Activity implements DataListener, GoogleA
                 public void onResult(DataApi.DataItemResult dataItemResult) {
                     if (dataItemResult.getDataItem() != null) {
                         Asset loaded = DataMapItem.fromDataItem(dataItemResult.getDataItem()).getDataMap().getAsset(loc);
-                        loadBitmapFromAsset(loaded,new ResultCallback<DataApi.GetFdForAssetResult>() {
-                            @Override
-                            public void onResult(DataApi.GetFdForAssetResult getFdForAssetResult) {
-                                onAssetLoad(path,loc, BitmapFactory.decodeStream(getFdForAssetResult.getInputStream()));
-                            }
-                        });
+                        if(loaded == null){
+
+                        }
+                        else {
+                            loadBitmapFromAsset(loaded, new ResultCallback<DataApi.GetFdForAssetResult>() {
+                                @Override
+                                public void onResult(DataApi.GetFdForAssetResult getFdForAssetResult) {
+                                    onAssetLoad(path, loc, BitmapFactory.decodeStream(getFdForAssetResult.getInputStream()));
+                                }
+                            });
+                        }
 
                     }
                     else {

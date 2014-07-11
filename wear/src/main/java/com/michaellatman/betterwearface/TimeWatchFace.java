@@ -1,6 +1,8 @@
 package com.michaellatman.betterwearface;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -238,6 +240,23 @@ public class TimeWatchFace extends WatchfaceActivity {
             if(changed.getBoolean("customBackground",false)){
                 Log.d("CustomBackground","Yes");
                 fetchAsset("/settings","background");
+            }
+            else{
+                if(background.getDrawable() != null){
+                    /*
+                    Notification noti = new Notification.Builder(this)
+                            .setContentTitle("Background Removed")
+                            .setContentText("If you removed the background, ignore. If this is an error. email mlatman@gmail.com")
+                            .setSmallIcon(R.drawable.go_to_phone_00156)
+                            .build();
+                    NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                    //call notify method of NotificationManager to add this notification to android notification drawer..
+                    notificationmanager.notify(0, noti);
+                    */
+
+                }
+                Log.d("CustomBackground","No");
+                background.setImageDrawable(null);
             }
         }
     }

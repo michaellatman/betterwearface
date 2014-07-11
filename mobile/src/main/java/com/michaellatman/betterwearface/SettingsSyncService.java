@@ -73,12 +73,12 @@ public class SettingsSyncService extends Service {
 
                 //Put settings here.
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-                Toast.makeText(getApplicationContext(),"Syncing Settings",Toast.LENGTH_LONG).show();
-                dataMap.getDataMap().putInt("someRandom",new Random().nextInt(30));
+                //Toast.makeText(getApplicationContext(),"Syncing Settings",Toast.LENGTH_LONG).show();
+                //dataMap.getDataMap().putInt("someRandom",new Random().nextInt(30));
 
 
 
-                if(preferences.getBoolean("backgroundChanged",false)) {
+                if(preferences.getBoolean("backgroundSet",false)) {
                     Toast.makeText(getApplicationContext(),"Syncing Background",Toast.LENGTH_LONG).show();
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putBoolean("backgroundChanged", false);
@@ -105,19 +105,23 @@ public class SettingsSyncService extends Service {
                     }
                     if (bitmap != null) {
                         ByteArrayOutputStream s = new ByteArrayOutputStream();
+                        bitmap = Bitmap.createScaledBitmap(bitmap, 312, 312, true);
                         bitmap.compress(Bitmap.CompressFormat.PNG, 100, s);
+                        Log.d("Sync","Add background");
                         byte[] byteArray = s.toByteArray();
                         dataMap.getDataMap().putBoolean("customBackground", true);
                         dataMap.getDataMap().putAsset("background", Asset.createFromBytes(byteArray));
                     } else {
+                        Log.d("Sync","Remove background");
                         dataMap.getDataMap().putBoolean("customBackground", false);
                     }
                 }
-
-                PutDataRequest request = dataMap.asPutDataRequest();
-                com.google.android.gms.common.api.PendingResult<DataApi.DataItemResult> pendingResult = Wearable.DataApi
-                        .putDataItem(mGoogleApiClient, request);
-                pendingResult.setResultCallback(mResultCallback);
+                if(dataMap.getDataMap().size()>0) {
+                    PutDataRequest request = dataMap.asPutDataRequest();
+                    com.google.android.gms.common.api.PendingResult<DataApi.DataItemResult> pendingResult = Wearable.DataApi
+                            .putDataItem(mGoogleApiClient, request);
+                    pendingResult.setResultCallback(mResultCallback);
+                }
             }
         }
 
