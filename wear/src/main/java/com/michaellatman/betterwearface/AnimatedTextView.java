@@ -11,8 +11,8 @@ import android.widget.TextView;
  * Created by michael on 7/8/14.
  */
 public class AnimatedTextView extends TextView implements Animation.AnimationListener {
-    private final Animation out;
-    private final Animation in;
+    private  Animation out;
+    private  Animation in;
     String pending = "";
     Boolean isDirty = false;
     Boolean animated = true;
@@ -39,6 +39,16 @@ public class AnimatedTextView extends TextView implements Animation.AnimationLis
         in = AnimationUtils.loadAnimation(context, R.anim.slidein);
         out = AnimationUtils.loadAnimation(context, R.anim.slideout);
         out.setFillAfter(true);
+        in.setAnimationListener(this);
+        out.setAnimationListener(this);
+    }
+    public void setIn(Animation a){
+        in = a;
+        in.setAnimationListener(this);
+        out.setAnimationListener(this);
+    }
+    public void setOut(Animation a){
+        out = a;
         in.setAnimationListener(this);
         out.setAnimationListener(this);
     }

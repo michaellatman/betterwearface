@@ -24,15 +24,15 @@
 
         </activity>
 
-        <!--
+
         <activity
             android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
             android:name=".OldFashion"
-            android:label="Classic Face"
+            android:label="BetterDigital"
             android:taskAffinity=""
             android:allowEmbedded="true" >
 
-            <meta-data android:name="com.google.android.clockwork.home.preview" android:resource="@drawable/preview" />
+            <meta-data android:name="com.google.android.clockwork.home.preview" android:resource="@drawable/digital" />
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,7 +40,7 @@
             </intent-filter>
 
         </activity>
-        -->
+
         <service
             android:name=".DataChangeReceiver">
             <intent-filter>

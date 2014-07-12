@@ -27,6 +27,7 @@ import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -70,7 +71,7 @@ public class UpdateWeatherService extends Service {
                 RequestParams params = new RequestParams();
                 params.add("lat", ""+location.getLatitude());
                 params.add("lon", ""+location.getLongitude());
-                WeatherClient.get(params, new JsonHttpResponseHandler(){
+                WeatherClient.get(params, new JsonHttpResponseHandler() {
 
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -79,15 +80,14 @@ public class UpdateWeatherService extends Service {
 
 
                             JSONObject current = response.getJSONArray("weather").getJSONObject(0);
-                            double temp = response.getJSONObject("main").getDouble("temp")-273.15;
+                            double temp = response.getJSONObject("main").getDouble("temp") - 273.15;
                             String condition = current.getString("id");
                             PutDataMapRequest dataMap = PutDataMapRequest.create("/weather");
                             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-                            if(preferences.getString(SettingsFragment.KEY_PREF_TEMP_FORMAT,"Fahrenheit").equals("Fahrenheit")){
-                                dataMap.getDataMap().putString("text", (temp*1.8000 + 32.00)+"˚ F");
-                            }
-                            else
-                                dataMap.getDataMap().putString("text", temp+"˚ C");
+                            if (preferences.getString(SettingsFragment.KEY_PREF_TEMP_FORMAT, "Fahrenheit").equals("Fahrenheit")) {
+                                dataMap.getDataMap().putString("text",new DecimalFormat("#.00").format((temp * 1.8000 + 32.00)) + "˚ F");
+                            } else
+                                dataMap.getDataMap().putString("text", new DecimalFormat("#.00").format(temp) + "˚ C");
 
                             dataMap.getDataMap().putString("condition", condition);
                             //dataMap.getDataMap().putString("random", ""+new Random().nextInt(20));
@@ -99,18 +99,15 @@ public class UpdateWeatherService extends Service {
                             pendingResult.setResultCallback(mResultCallback);
 
 
-
-
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        Log.d("Response",response.toString());
+                        Log.d("Response", response.toString());
                     }
 
                     @Override
                     public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                        Log.d("Response","failure");
+                        Log.d("Response", "failure");
                     }
                 });
             }
