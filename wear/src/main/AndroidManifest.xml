@@ -14,15 +14,33 @@
             android:label="@string/watchface_name"
             android:taskAffinity=""
             android:allowEmbedded="true" >
-            <!-- Preview for when the user goes to change watchfaces -->
+
             <meta-data android:name="com.google.android.clockwork.home.preview" android:resource="@drawable/preview" />
-            <!-- Intent filter to make the activity show up in the watchface choices -->
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
             </intent-filter>
 
         </activity>
+
+        <!--
+        <activity
+            android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
+            android:name=".OldFashion"
+            android:label="Classic Face"
+            android:taskAffinity=""
+            android:allowEmbedded="true" >
+
+            <meta-data android:name="com.google.android.clockwork.home.preview" android:resource="@drawable/preview" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
+            </intent-filter>
+
+        </activity>
+        -->
         <service
             android:name=".DataChangeReceiver">
             <intent-filter>

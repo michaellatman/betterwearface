@@ -67,7 +67,7 @@ public class SettingsSyncService extends Service {
         mGoogleApiClient.connect();
 
 
-        return START_STICKY;
+        return START_REDELIVER_INTENT;
 
     }
     public static Bitmap loadBitmap(Context context, String picName){

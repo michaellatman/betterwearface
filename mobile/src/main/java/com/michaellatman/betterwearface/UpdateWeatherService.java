@@ -68,7 +68,8 @@ public class UpdateWeatherService extends Service {
 
 
                 RequestParams params = new RequestParams();
-                params.add("q", location.getLatitude() + "," + location.getLongitude());
+                params.add("lat", ""+location.getLatitude());
+                params.add("lon", ""+location.getLongitude());
                 WeatherClient.get(params, new JsonHttpResponseHandler(){
 
                     @Override
@@ -77,15 +78,16 @@ public class UpdateWeatherService extends Service {
                         try {
 
 
-                            JSONObject current = response.getJSONObject("data").getJSONArray("current_condition").getJSONObject(0);
-                            String condition = current.getString("weatherCode");
+                            JSONObject current = response.getJSONArray("weather").getJSONObject(0);
+                            double temp = response.getJSONObject("main").getDouble("temp")-273.15;
+                            String condition = current.getString("id");
                             PutDataMapRequest dataMap = PutDataMapRequest.create("/weather");
                             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
                             if(preferences.getString(SettingsFragment.KEY_PREF_TEMP_FORMAT,"Fahrenheit").equals("Fahrenheit")){
-                                dataMap.getDataMap().putString("text", current.getString("temp_F")+"˚ F");
+                                dataMap.getDataMap().putString("text", (temp*1.8000 + 32.00)+"˚ F");
                             }
                             else
-                                dataMap.getDataMap().putString("text", current.getString("temp_C")+"˚ C");
+                                dataMap.getDataMap().putString("text", temp+"˚ C");
 
                             dataMap.getDataMap().putString("condition", condition);
                             //dataMap.getDataMap().putString("random", ""+new Random().nextInt(20));

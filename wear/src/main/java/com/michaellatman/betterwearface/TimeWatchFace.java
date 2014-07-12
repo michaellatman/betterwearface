@@ -132,9 +132,10 @@ public class TimeWatchFace extends WatchfaceActivity {
             if(calendar.get(Calendar.MINUTE) == 0){
                 tens.setPendingText("o'clock");
             }
-            else {
-                tens.setPendingText(numberToText(calendar.get(Calendar.MINUTE)));
+            else if(calendar.get(Calendar.MINUTE)<10){
+                tens.setPendingText("O'"+numberToText(calendar.get(Calendar.MINUTE)));
             }
+            else  tens.setPendingText(numberToText(calendar.get(Calendar.MINUTE)));
             minutes.setPendingText("");
         }
 
@@ -202,21 +203,27 @@ public class TimeWatchFace extends WatchfaceActivity {
             int condition = Integer.valueOf(changed.getString("condition"));
             if (condition == 113) {
                 weather.setImageDrawable(getResources().getDrawable(R.drawable.sunny));
-            } else if (condition == 116) {
+            } else if (condition>=800&&condition<=804) {
                 if(getTime().get(Calendar.AM_PM) == Calendar.AM){
-                    weather.setImageDrawable(getResources().getDrawable(R.drawable.mostlycloudy));
+                    if(condition==800){
+                        weather.setImageDrawable(getResources().getDrawable(R.drawable.sunny));
+                        weather.setImageDrawable(getResources().getDrawable(R.drawable.mostlycloudy));
+                    }
+                    if(condition==802)  weather.setImageDrawable(getResources().getDrawable(R.drawable.cloud));
+                    else
+                        weather.setImageDrawable(getResources().getDrawable(R.drawable.mostlycloudy));
                 }
                 else{
                     weather.setImageDrawable(getResources().getDrawable(R.drawable.cloud));
                 }
-            } else if (condition == 119) {
-                weather.setImageDrawable(getResources().getDrawable(R.drawable.cloud));
-            } else if (condition == 122) {
-                weather.setImageDrawable(getResources().getDrawable(R.drawable.cloud));
-            } else if (condition >= 293 && condition <= 308) {
+            }
+            else if (condition >= 300 && condition <= 531) {
                 weather.setImageDrawable(getResources().getDrawable(R.drawable.rain));
-            } else if (condition >= 323 && condition <= 395) {
+            } else if (condition >= 600 && condition <= 622) {
                 weather.setImageDrawable(getResources().getDrawable(R.drawable.snow));
+            }
+            else if (condition >= 200 && condition <= 232) {
+                weather.setImageDrawable(getResources().getDrawable(R.drawable.thunder));
             }
         }
         else {
