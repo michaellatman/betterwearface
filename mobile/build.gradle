@@ -8,8 +8,8 @@ android {
         applicationId "com.michaellatman.betterwearface"
         minSdkVersion 19
         targetSdkVersion 20
-        versionCode 15
-        versionName "1.1.4"
+        versionCode 16
+        versionName "1.1.5"
     }
     buildTypes {
         release {
