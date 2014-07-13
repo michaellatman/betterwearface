@@ -85,9 +85,9 @@ public class UpdateWeatherService extends Service {
                             PutDataMapRequest dataMap = PutDataMapRequest.create("/weather");
                             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
                             if (preferences.getString(SettingsFragment.KEY_PREF_TEMP_FORMAT, "Fahrenheit").equals("Fahrenheit")) {
-                                dataMap.getDataMap().putString("text",new DecimalFormat("#.00").format((temp * 1.8000 + 32.00)) + "˚ F");
+                                dataMap.getDataMap().putString("text",(int)(temp * 1.8000 + 32.00) + "˚ F");
                             } else
-                                dataMap.getDataMap().putString("text", new DecimalFormat("#.00").format(temp) + "˚ C");
+                                dataMap.getDataMap().putString("text",(int)temp + "˚ C");
 
                             dataMap.getDataMap().putString("condition", condition);
                             //dataMap.getDataMap().putString("random", ""+new Random().nextInt(20));

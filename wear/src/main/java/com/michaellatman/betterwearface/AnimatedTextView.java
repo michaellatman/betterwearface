@@ -16,6 +16,8 @@ public class AnimatedTextView extends TextView implements Animation.AnimationLis
     String pending = "";
     Boolean isDirty = false;
     Boolean animated = true;
+    Boolean isAnimating = false;
+    Boolean firstSet = true;
     public AnimatedTextView(Context context) {
         super(context);
         in = AnimationUtils.loadAnimation(context, R.anim.slidein);
@@ -56,9 +58,18 @@ public class AnimatedTextView extends TextView implements Animation.AnimationLis
     public void setPendingText(String pending){
         if(!getText().equals(pending)){
             if(animated){
-                isDirty = true;
-                this.pending = pending;
-                animateOut();
+                if(!firstSet){
+                    this.clearAnimation();
+                    isDirty = true;
+                    this.pending = pending;
+                    isAnimating=true;
+                    animateOut();
+                }
+                else{
+                    this.pending=pending;
+                    this.onAnimationEnd(out);
+                    firstSet=false;
+                }
             }
             else{
                 setText(pending);
@@ -89,7 +100,11 @@ public class AnimatedTextView extends TextView implements Animation.AnimationLis
             //setVisibility(View.INVISIBLE);
             isDirty = false;
             setText(pending);
+
             this.startAnimation(in);
+        }
+        if(animation == in){
+            isAnimating=false;
         }
     }
 

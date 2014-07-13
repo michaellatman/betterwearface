@@ -16,8 +16,8 @@
             android:layout_gravity="center" />
 
         <ImageView
-            android:layout_width="228dp"
-            android:layout_height="122dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:id="@+id/imageView"
             android:layout_gravity="center_horizontal|top"
             android:background="@drawable/textmask" />
@@ -44,7 +44,8 @@
                 android:gravity="right"
                 android:textSize="50sp"
                 android:layout_marginLeft="0dp"
-                android:layout_marginRight="-39dp" />
+                android:layout_marginRight="-39dp"
+                android:fontFamily="sans-serif-thin" />
 
             <com.michaellatman.betterwearface.AnimatedTextView
                 android:layout_width="wrap_content"
@@ -58,7 +59,8 @@
                 android:textSize="50sp"
                 android:paddingLeft="0px"
                 android:layout_marginRight="0px"
-                android:layout_marginLeft="0dp" />
+                android:layout_marginLeft="0dp"
+                android:fontFamily="sans-serif-thin" />
 
             <com.michaellatman.betterwearface.AnimatedTextView
                 android:layout_width="wrap_content"
@@ -68,7 +70,8 @@
                 android:id="@+id/center"
                 android:paddingRight="3dp"
                 android:textSize="50sp"
-                android:layout_marginTop="-5dp" />
+                android:layout_marginTop="-5dp"
+                android:fontFamily="sans-serif-light" />
 
             <com.michaellatman.betterwearface.AnimatedTextView
                 android:layout_width="wrap_content"
@@ -77,9 +80,10 @@
                 android:text="3"
                 android:id="@+id/minute1"
                 android:layout_weight="1"
-                android:textStyle="bold"
                 android:textSize="50sp"
-                android:layout_marginLeft="0dp" />
+                android:layout_marginLeft="0dp"
+                android:fontFamily="sans-serif-light"
+                android:textStyle="bold" />
 
             <com.michaellatman.betterwearface.AnimatedTextView
                 android:layout_width="wrap_content"
@@ -87,10 +91,11 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="5"
                 android:id="@+id/minute2"
-                android:textStyle="bold"
                 android:textSize="50sp"
                 android:layout_weight="1"
-                android:layout_marginLeft="-38dp" />
+                android:layout_marginLeft="-38dp"
+                android:fontFamily="sans-serif-light"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
