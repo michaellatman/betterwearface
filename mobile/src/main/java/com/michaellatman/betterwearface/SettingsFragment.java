@@ -63,6 +63,10 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             UpdateWeatherService.update(getActivity());
 
         }
+        if(key.equals("weather")){
+            SettingsSyncService.startSync(getActivity());
+            UpdateWeatherService.update(getActivity());
+        }
             //Preference connectionPref = findPreference(key);
             // Set summary to be the user-description for the selected value
             //connectionPref.setSummary(sharedPreferences.getBoolean(key, ));

@@ -46,18 +46,25 @@ public class UpdateWeatherService extends Service {
         intent.setAction("com.michaellatman.weatherupdate");
         context.startService(intent);
     }
-
+    Boolean enabled;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         GoogleApiClient.Builder builder = new GoogleApiClient.Builder(this);
+
         builder.addApi(Wearable.API);
         builder.addConnectionCallbacks(mConnectedCallback);
         mGoogleApiClient = builder.build();
         Log.d("Service","Start!");
-        mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        enabled = preferences.getBoolean("weather",true);
+        if(preferences.getBoolean("weather",true)){
+            mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
-        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1,
-                1, mLocationListener);
+            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1,
+                    1, mLocationListener);
+        }
+        else mGoogleApiClient.connect();
+
         return START_STICKY;
 
     }
@@ -67,49 +74,64 @@ public class UpdateWeatherService extends Service {
         public void onConnected(Bundle bundle) {
             if(mGoogleApiClient != null){
 
-
-                RequestParams params = new RequestParams();
-                params.add("lat", ""+location.getLatitude());
-                params.add("lon", ""+location.getLongitude());
-                WeatherClient.get(params, new JsonHttpResponseHandler() {
-
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        super.onSuccess(statusCode, headers, response);
-                        try {
+                if(enabled) {
 
 
-                            JSONObject current = response.getJSONArray("weather").getJSONObject(0);
-                            double temp = response.getJSONObject("main").getDouble("temp") - 273.15;
-                            String condition = current.getString("id");
-                            PutDataMapRequest dataMap = PutDataMapRequest.create("/weather");
-                            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-                            if (preferences.getString(SettingsFragment.KEY_PREF_TEMP_FORMAT, "Fahrenheit").equals("Fahrenheit")) {
-                                dataMap.getDataMap().putString("text",(int)(temp * 1.8000 + 32.00) + "˚ F");
-                            } else
-                                dataMap.getDataMap().putString("text",(int)temp + "˚ C");
+                    RequestParams params = new RequestParams();
+                    params.add("lat", "" + location.getLatitude());
+                    params.add("lon", "" + location.getLongitude());
+                    WeatherClient.get(params, new JsonHttpResponseHandler() {
 
-                            dataMap.getDataMap().putString("condition", condition);
-                            //dataMap.getDataMap().putString("random", ""+new Random().nextInt(20));
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            super.onSuccess(statusCode, headers, response);
+                            try {
 
 
-                            PutDataRequest request = dataMap.asPutDataRequest();
-                            com.google.android.gms.common.api.PendingResult<DataApi.DataItemResult> pendingResult = Wearable.DataApi
-                                    .putDataItem(mGoogleApiClient, request);
-                            pendingResult.setResultCallback(mResultCallback);
+                                JSONObject current = response.getJSONArray("weather").getJSONObject(0);
+                                double temp = response.getJSONObject("main").getDouble("temp") - 273.15;
+                                String condition = current.getString("id");
+                                PutDataMapRequest dataMap = PutDataMapRequest.create("/weather");
+                                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+                                if (preferences.getString(SettingsFragment.KEY_PREF_TEMP_FORMAT, "Fahrenheit").equals("Fahrenheit")) {
+                                    dataMap.getDataMap().putString("text", (int) (temp * 1.8000 + 32.00) + "˚ F");
+                                } else
+                                    dataMap.getDataMap().putString("text", (int) temp + "˚ C");
+
+                                dataMap.getDataMap().putString("condition", condition);
+                                //dataMap.getDataMap().putString("random", ""+new Random().nextInt(20));
 
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                                PutDataRequest request = dataMap.asPutDataRequest();
+                                com.google.android.gms.common.api.PendingResult<DataApi.DataItemResult> pendingResult = Wearable.DataApi
+                                        .putDataItem(mGoogleApiClient, request);
+                                pendingResult.setResultCallback(mResultCallback);
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            Log.d("Response", response.toString());
                         }
-                        Log.d("Response", response.toString());
-                    }
 
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                        Log.d("Response", "failure");
-                    }
-                });
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                            Log.d("Response", "failure");
+                        }
+                    });
+                }
+                else{
+                    PutDataMapRequest dataMap = PutDataMapRequest.create("/weather");
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+                    dataMap.getDataMap().putString("condition", null);
+                    //dataMap.getDataMap().putString("temp", ""+new Random().nextInt(20));
+
+
+                    PutDataRequest request = dataMap.asPutDataRequest();
+                    com.google.android.gms.common.api.PendingResult<DataApi.DataItemResult> pendingResult = Wearable.DataApi
+                            .putDataItem(mGoogleApiClient, request);
+                    pendingResult.setResultCallback(mResultCallback);
+                }
             }
         }
 

@@ -40,7 +40,7 @@ import java.util.Locale;
 /**
  * Created by jeremy on 7/4/14.
  */
-public class TimeWatchFace extends WatchfaceActivity {
+public class TimeWatchFace extends WatchfaceActivity{
 
 
     ImageView background;
@@ -274,4 +274,6 @@ public class TimeWatchFace extends WatchfaceActivity {
         }
 
     }
+
+
 }

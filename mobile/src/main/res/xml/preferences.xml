@@ -7,13 +7,20 @@
         android:summary="@string/SETTING_ALWAYS_ANIMATE_TRUE"
         android:defaultValue="true"
         android:enabled="false"/>
+    <CheckBoxPreference
+        android:key="weather"
+        android:title="Weather"
+        android:summary="Show weather."
+    android:defaultValue="true"
+        />
     <ListPreference
         android:entries="@array/option_temp_format"
         android:entryValues="@array/option_temp_format_values"
         android:defaultValue="Fahrenheit"
         android:title="Temperature Units"
         android:summary="@string/SETTING_TEMP_FORMAT_F"
-        android:key="@string/SETTING_TEMP_FORMAT">
+        android:key="@string/SETTING_TEMP_FORMAT"
+        android:dependency="weather">
 
     </ListPreference>
 

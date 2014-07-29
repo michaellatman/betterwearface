@@ -47,6 +47,14 @@
                 android:layout_marginRight="-39dp"
                 android:fontFamily="sans-serif-thin" />
 
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:id="@+id/lockState"
+                android:layout_toEndOf="@+id/weatherIcon"
+                android:src="@drawable/unlocked"
+                android:layout_alignTop="@+id/textMask" />
+
             <com.michaellatman.betterwearface.AnimatedTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

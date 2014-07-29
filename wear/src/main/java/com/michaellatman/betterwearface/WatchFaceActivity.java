@@ -9,6 +9,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -30,7 +32,7 @@ import java.util.List;
 /**
  * Created by michael on 7/10/14.
  */
-public class WatchfaceActivity extends Activity implements DataListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<NodeApi.GetConnectedNodesResult> {
+public class WatchfaceActivity extends Activity implements DataListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<NodeApi.GetConnectedNodesResult>, LockStateBroadcastReceiver.LockStateListener {
 
     protected GoogleApiClient mGoogleApiClient;
     protected Boolean connected = false;
@@ -48,8 +50,8 @@ public class WatchfaceActivity extends Activity implements DataListener, GoogleA
     private Clock mClock = new Clock(Looper.getMainLooper(), mClockListener);
     private TimeBroadcastReceiver mTimeBroadcastReceiver = new TimeBroadcastReceiver(mClockListener);
     private DataBroadcastReceiver mDataBroadcastReceiver = new DataBroadcastReceiver(this);
-
-
+    private LockStateBroadcastReceiver mLockStateReceiver = new LockStateBroadcastReceiver(this);
+    ImageView mLockState;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.v("WatchFace", "onCreate();");
@@ -57,7 +59,6 @@ public class WatchfaceActivity extends Activity implements DataListener, GoogleA
         powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 "MyWakelockTag");
-
 
         GoogleApiClient.Builder builder = new GoogleApiClient.Builder(this);
 
@@ -68,6 +69,10 @@ public class WatchfaceActivity extends Activity implements DataListener, GoogleA
         mGoogleApiClient = builder.build();
         mGoogleApiClient.connect();
         doSetup();
+
+        mLockState = (ImageView) findViewById(R.id.lockState);
+        if(mLockState!=null) mLockState.setVisibility(View.GONE);
+        else Log.d("Lockstate","null");
         Calendar calendar = Calendar.getInstance();
         updateTime(calendar);
         // Start the clock.
@@ -75,7 +80,7 @@ public class WatchfaceActivity extends Activity implements DataListener, GoogleA
 
         mTimeBroadcastReceiver.register(this);
         mDataBroadcastReceiver.register(this);
-
+        mLockStateReceiver.register(this);
     }
     @Override
     public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
@@ -203,6 +208,7 @@ public class WatchfaceActivity extends Activity implements DataListener, GoogleA
         super.onDestroy();
         mTimeBroadcastReceiver.unregister(this);
         mDataBroadcastReceiver.unregister(this);
+        mLockStateReceiver.unregister(this);
         mGoogleApiClient.disconnect();
         connected=false;
     }
@@ -230,4 +236,13 @@ public class WatchfaceActivity extends Activity implements DataListener, GoogleA
     }
 
 
+    @Override
+    public void onStateChange(boolean locked) {
+        Log.d("Lol","T");
+        if(mLockState!=null){
+            mLockState.setVisibility(View.VISIBLE);
+            if(locked)mLockState.setImageDrawable(getResources().getDrawable(R.drawable.locked));
+            else mLockState.setImageDrawable(getResources().getDrawable(R.drawable.unlocked));
+        }
+    }
 }

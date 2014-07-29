@@ -15,9 +15,9 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/textMask"
+        android:background="@drawable/textmask"
         android:layout_alignParentBottom="true"
-        android:layout_alignEnd="@+id/hoursView"
-        android:background="@drawable/textmask" />
+        android:layout_alignParentEnd="true" />
 
     <com.michaellatman.betterwearface.AnimatedTextView
         android:layout_width="match_parent"
@@ -99,6 +99,16 @@
         android:layout_below="@+id/weatherText"
         android:layout_alignParentStart="true"
         android:gravity="center_horizontal" />
+
+    <ImageView
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:id="@+id/lockState"
+        android:layout_toEndOf="@+id/weatherIcon"
+        android:src="@drawable/unlocked"
+        android:layout_marginTop="17dp"
+        android:layout_alignTop="@+id/textMask"
+        android:layout_marginLeft="12dp" />
 
 
 </RelativeLayout>
