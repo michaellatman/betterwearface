@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/background"
+        android:layout_alignParentBottom="true" />
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/textMask"
+        android:background="@drawable/textmask"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
+
+    <com.michaellatman.betterwearface.AnimatedTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Wearable.Large"
+        android:text="Twelve"
+        android:id="@+id/hoursView"
+        android:textSize="25dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:textColor="@color/white"
+        android:fontFamily="sans-serif-condensed"
+        android:typeface="normal"
+        android:textStyle="bold"
+        android:gravity="right"
+        android:paddingRight="10dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="50dp" />
+
+    <com.michaellatman.betterwearface.AnimatedTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Wearable.Large"
+        android:text="Twenty"
+        android:id="@+id/tensView"
+        android:typeface="normal"
+        android:textSize="25dp"
+        android:layout_below="@+id/hoursView"
+        android:layout_marginTop="-14dp"
+        android:textColor="@color/white"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="right"
+        android:paddingRight="10dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginRight="25dp" />
+
+    <com.michaellatman.betterwearface.AnimatedTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Wearable.Large"
+        android:text="Two"
+        android:id="@+id/minView"
+        android:typeface="normal"
+        android:textSize="25dp"
+        android:textColor="@color/white"
+        android:fontFamily="sans-serif-condensed"
+        android:layout_below="@+id/tensView"
+        android:layout_marginTop="-13dp"
+        android:gravity="right"
+        android:paddingRight="10dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="25dp" />
+
+    <view
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        class="android.support.wearable.view.CircledImageView"
+        android:scaleType="fitCenter"
+        android:id="@+id/weatherIcon"
+        android:layout_alignBottom="@+id/minView"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:id="@+id/weatherText"
+        android:paddingLeft="2dp"
+        android:text="20 F"
+        android:layout_alignTop="@+id/weatherIcon"
+        android:layout_toRightOf="@+id/weatherIcon" />
+
+    <TextView
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Tuesday"
+        android:id="@+id/dayView"
+        android:textColor="@color/white"
+        android:gravity="right"
+        android:paddingRight="10dp"
+        android:layout_below="@+id/weatherText"
+        android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:id="@+id/lockState"
+        android:layout_toEndOf="@+id/weatherText"
+        android:src="@drawable/unlocked"
+        android:layout_below="@+id/hoursView"
+        android:layout_alignStart="@+id/weatherText"
+        android:visibility="invisible" />
+
+
+</RelativeLayout>

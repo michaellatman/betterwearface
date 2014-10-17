@@ -44,12 +44,14 @@ public class OldFashion extends WatchfaceActivity {
         minute.setOut(AnimationUtils.loadAnimation(this, R.anim.fadeout));
         minute2.setOut(AnimationUtils.loadAnimation(this, R.anim.fadeout));
         super.doSetup();
+        startClock();
     }
     public String getMonth(int month) {
         return new DateFormatSymbols().getMonths()[month];
     }
     @Override
     protected void updateTime(Calendar calendar) {
+        super.updateTime(calendar);
         String h = ""+calendar.get(Calendar.HOUR);
         if(calendar.get(Calendar.HOUR)==0)h="12";
         if(DateFormat.is24HourFormat(this)){
@@ -83,7 +85,7 @@ public class OldFashion extends WatchfaceActivity {
         //calendar.set(Calendar.HOUR,0);
         //calendar.set(Calendar.MINUTE,0);
         date.setPendingText(dayNames[calendar.get(Calendar.DAY_OF_WEEK)]+" "+monthsNames[calendar.get(Calendar.MONTH)]+" "+calendar.get(Calendar.DAY_OF_MONTH));
-        super.updateTime(calendar);
+
     }
 
     @Override

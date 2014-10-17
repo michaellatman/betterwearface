@@ -10,7 +10,7 @@
 
         <activity
             android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
-            android:name=".TimeWatchFace"
+            android:name=".TimeWatchFaceRect"
             android:label="@string/watchface_name"
             android:taskAffinity=""
             android:allowEmbedded="true" >
@@ -23,6 +23,22 @@
             </intent-filter>
 
         </activity>
+        <activity
+            android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
+            android:name=".TimeWatchFaceRound"
+            android:label="BetterWearFace Round"
+            android:taskAffinity=""
+            android:allowEmbedded="true" >
+
+            <meta-data android:name="com.google.android.clockwork.home.preview" android:resource="@drawable/preview" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
+            </intent-filter>
+
+        </activity>
+
 
 
         <activity

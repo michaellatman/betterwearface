@@ -52,6 +52,8 @@ public class WatchfaceActivity extends Activity implements DataListener, GoogleA
     private DataBroadcastReceiver mDataBroadcastReceiver = new DataBroadcastReceiver(this);
     private LockStateBroadcastReceiver mLockStateReceiver = new LockStateBroadcastReceiver(this);
     ImageView mLockState;
+    private boolean registered = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.v("WatchFace", "onCreate();");
@@ -70,6 +72,9 @@ public class WatchfaceActivity extends Activity implements DataListener, GoogleA
         mGoogleApiClient.connect();
         doSetup();
 
+
+    }
+    public void startClock(){
         mLockState = (ImageView) findViewById(R.id.lockState);
         if(mLockState!=null) mLockState.setVisibility(View.GONE);
         else Log.d("Lockstate","null");
@@ -77,11 +82,12 @@ public class WatchfaceActivity extends Activity implements DataListener, GoogleA
         updateTime(calendar);
         // Start the clock.
         mClock.start();
-
+        registered = true;
         mTimeBroadcastReceiver.register(this);
         mDataBroadcastReceiver.register(this);
         mLockStateReceiver.register(this);
     }
+
     @Override
     public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
         List<Node> nodes = getConnectedNodesResult.getNodes();
@@ -161,7 +167,7 @@ public class WatchfaceActivity extends Activity implements DataListener, GoogleA
 
     }
     protected void updateTime(Calendar calendar){
-
+        wakeLock.acquire(4000);
     }
     @Override
     public void onDataChange(String node, final DataMap changed) {
@@ -206,9 +212,11 @@ public class WatchfaceActivity extends Activity implements DataListener, GoogleA
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mTimeBroadcastReceiver.unregister(this);
-        mDataBroadcastReceiver.unregister(this);
-        mLockStateReceiver.unregister(this);
+        if(registered) {
+            mTimeBroadcastReceiver.unregister(this);
+            mDataBroadcastReceiver.unregister(this);
+            mLockStateReceiver.unregister(this);
+        }
         mGoogleApiClient.disconnect();
         connected=false;
     }

@@ -3,6 +3,7 @@ package com.michaellatman.betterwearface;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -12,8 +13,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.support.wearable.view.CircledImageView;
+import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowInsets;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -111,7 +114,7 @@ public class TimeWatchFace extends WatchfaceActivity{
     }
     @Override
     protected void updateTime(Calendar calendar){
-
+        super.updateTime(calendar);
         DateFormatSymbols symbols = new DateFormatSymbols(Locale.getDefault());
 // for the current Locale :
 //   DateFormatSymbols symbols = new DateFormatSymbols();
@@ -119,35 +122,35 @@ public class TimeWatchFace extends WatchfaceActivity{
         String[] monthsNames = symbols.getShortMonths();
         //calendar.set(Calendar.HOUR,0);
         //calendar.set(Calendar.MINUTE,0);
-        dayView.setText(dayNames[calendar.get(Calendar.DAY_OF_WEEK)]+" "+monthsNames[calendar.get(Calendar.MONTH)]+" "+calendar.get(Calendar.DAY_OF_MONTH));
-        //dayView.setText(dayNames[calendar.get(Calendar.DAY_OF_WEEK)]);
-        if(calendar.get(Calendar.MINUTE)>20){
+        if(dayView!=null) {
+            dayView.setText(dayNames[calendar.get(Calendar.DAY_OF_WEEK)] + " " + monthsNames[calendar.get(Calendar.MONTH)] + " " + calendar.get(Calendar.DAY_OF_MONTH));
+            //dayView.setText(dayNames[calendar.get(Calendar.DAY_OF_WEEK)]);
+            if (calendar.get(Calendar.MINUTE) > 20) {
 
                 tens.setPendingText(numberToText((Integer.valueOf(Integer.toString(calendar.get(Calendar.MINUTE)).substring(0, 1) + "0"))));
                 minutes.setPendingText(numberToText((Integer.valueOf(Integer.toString(calendar.get(Calendar.MINUTE)).substring(1, 2)))));
 
-        }
-        else{
+            } else {
 
-            if(calendar.get(Calendar.MINUTE) == 0){
-                tens.setPendingText("o'clock");
+                if (calendar.get(Calendar.MINUTE) == 0) {
+                    tens.setPendingText("o'clock");
+                } else if (calendar.get(Calendar.MINUTE) < 10) {
+                    tens.setPendingText("O'" + numberToText(calendar.get(Calendar.MINUTE)));
+                } else tens.setPendingText(numberToText(calendar.get(Calendar.MINUTE)));
+                minutes.setPendingText("");
             }
-            else if(calendar.get(Calendar.MINUTE)<10){
-                tens.setPendingText("O'"+numberToText(calendar.get(Calendar.MINUTE)));
-            }
-            else  tens.setPendingText(numberToText(calendar.get(Calendar.MINUTE)));
-            minutes.setPendingText("");
-        }
 
-        if(calendar.get(Calendar.HOUR)!=0) hours.setPendingText(numberToText(calendar.get(Calendar.HOUR)));
-        else hours.setPendingText("Twelve");
+            if (calendar.get(Calendar.HOUR) != 0)
+                hours.setPendingText(numberToText(calendar.get(Calendar.HOUR)));
+            else hours.setPendingText("Twelve");
+        }
     }
 
 
 
     @Override
     protected void doSetup(){
-        setContentView(R.layout.main);
+        //setContentView(R.layout.main);
         background = (ImageView) findViewById(R.id.background);
         hours = (AnimatedTextView) findViewById(R.id.hoursView);
         tens = (AnimatedTextView) findViewById(R.id.tensView);
@@ -161,6 +164,7 @@ public class TimeWatchFace extends WatchfaceActivity{
 
         in = AnimationUtils.loadAnimation(this, R.anim.slidein);
         out = AnimationUtils.loadAnimation(this, R.anim.slideout);
+        startClock();
     }
     @Override
     protected void doRestore(){
@@ -171,19 +175,22 @@ public class TimeWatchFace extends WatchfaceActivity{
     @Override
     protected void onDataNotExist(String path){
         if(path.equals("/weather")){
-            weatherText.setVisibility(View.INVISIBLE);
-            weather.setVisibility(View.INVISIBLE);
+            if(weather!=null){
+                weatherText.setVisibility(View.INVISIBLE);
+                weather.setVisibility(View.INVISIBLE);
+            }
+
         }
     }
     @Override
     protected void onPause(){
         super.onPause();
-        background.setVisibility(View.INVISIBLE);
+        if(background!=null)background.setVisibility(View.INVISIBLE);
     }
     @Override
     protected void onResume(){
         super.onResume();
-        background.setVisibility(View.VISIBLE);
+        if(background!=null)background.setVisibility(View.VISIBLE);
     }
 
     private void updateSettings(DataMap dataMap) {
